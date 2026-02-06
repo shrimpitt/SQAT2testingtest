@@ -63,22 +63,21 @@ class TestSelectFromExcel:
         driver.execute_script("arguments[0].scrollIntoView({block:'center'});", select_element)
         assert select_element.is_enabled(), "Select dropdown is not enabled"
 
-        # Set select value using JavaScript (more reliable on remote than Selenium Select click)
-        driver.execute_script(f"arguments[0].value = '{dropdown_value}'; arguments[0].dispatchEvent(new Event('change'));", select_element)
+        # Create Select object and select by value
+        select = Select(select_element)
+        select.select_by_value(dropdown_value)
 
         # Verify that the correct option is selected
-        selected_value = driver.execute_script("return arguments[0].value;", select_element)
-        selected_text = driver.execute_script(f"return Array.from(arguments[0].options).find(opt => opt.value === '{dropdown_value}').text;", select_element)
-        assert selected_value == dropdown_value, f"Expected value '{dropdown_value}', but got '{selected_value}'"
-        assert selected_text == expected_selected_text, \
-            f"Expected '{expected_selected_text}', but got '{selected_text}'"
+        selected_option = select.first_selected_option
+        assert selected_option.text == expected_selected_text, \
+            f"Expected '{expected_selected_text}', but got '{selected_option.text}'"
 
         # Take screenshot
         browser_name = driver.capabilities.get("browserName", "unknown").lower()
         screenshot_path = screenshot_dir / f"{test_name}_select_by_value_{browser_name}.png"
         driver.save_screenshot(str(screenshot_path))
 
-        print(f"✓ Test passed: {test_name} - Selected '{selected_text}' by value '{dropdown_value}'")
+        print(f"✓ Test passed: {test_name} - Selected '{selected_option.text}' by value '{dropdown_value}'")
         print(f"✓ Screenshot saved to: {screenshot_path}")
     
     @pytest.mark.parametrize("test_case", read_test_data(sheet_name="data"))
@@ -122,21 +121,21 @@ class TestSelectFromExcel:
         driver.execute_script("arguments[0].scrollIntoView({block:'center'});", select_element)
         assert select_element.is_enabled(), "Select dropdown is not enabled"
 
-        # Find option by text and set value using JavaScript (more reliable on remote)
-        option_value = driver.execute_script(f"return Array.from(arguments[0].options).find(opt => opt.text === '{dropdown_text}').value;", select_element)
-        driver.execute_script(f"arguments[0].value = '{option_value}'; arguments[0].dispatchEvent(new Event('change'));", select_element)
+        # Create Select object and select by visible text
+        select = Select(select_element)
+        select.select_by_visible_text(dropdown_text)
 
         # Verify that the correct option is selected
-        selected_text = driver.execute_script("return arguments[0].options[arguments[0].selectedIndex].text;", select_element)
-        assert selected_text == expected_selected_text, \
-            f"Expected '{expected_selected_text}', but got '{selected_text}'"
+        selected_option = select.first_selected_option
+        assert selected_option.text == expected_selected_text, \
+            f"Expected '{expected_selected_text}', but got '{selected_option.text}'"
 
         # Take screenshot
         browser_name = driver.capabilities.get("browserName", "unknown").lower()
         screenshot_path = screenshot_dir / f"{test_name}_select_by_text_{browser_name}.png"
         driver.save_screenshot(str(screenshot_path))
 
-        print(f"✓ Test passed: {test_name} - Selected '{selected_text}' by text '{dropdown_text}'")
+        print(f"✓ Test passed: {test_name} - Selected '{selected_option.text}' by text '{dropdown_text}'")
         print(f"✓ Screenshot saved to: {screenshot_path}")
 
     def _dump_debug(self, driver, artifact_dir: Path, label: str):
