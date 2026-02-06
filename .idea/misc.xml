@@ -3,5 +3,14 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.12 (SQAT2)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.12 (SQAT2)" project-jdk-type="Python SDK" />
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/pom.xml" />
+      </list>
+    </option>
+    <option name="workspaceImportForciblyTurnedOn" value="true" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="17" project-jdk-type="JavaSDK" />
 </project>
